@@ -1,13 +1,51 @@
 import * as React from "react";
-export function Table({ children }: { children: React.ReactNode }) {
-  return <div className="overflow-x-auto rounded-xl border border-[rgb(var(--border))]"><table className="w-full text-sm">{children}</table></div>;
+import { cn } from "@/lib/utils";
+
+export function Table({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLTableElement>) {
+  return (
+    <div className="overflow-x-auto rounded-xl border border-[rgb(var(--border))]">
+      <table className={cn("w-full text-sm", className)} {...props}>
+        {children}
+      </table>
+    </div>
+  );
 }
-export function THead({ children }: { children: React.ReactNode }) {
-  return <thead className="bg-[rgb(var(--muted))] text-gray-600">{children}</thead>;
+
+export function THead({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLTableSectionElement>) {
+  return <thead className={cn("bg-[rgb(var(--muted))] text-gray-600", className)} {...props} />;
 }
-export function TBody({ children }: { children: React.ReactNode }) {
-  return <tbody className="divide-y divide-[rgb(var(--border))]">{children}</tbody>;
+
+export function TBody({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLTableSectionElement>) {
+  return <tbody className={cn("divide-y divide-[rgb(var(--border))]", className)} {...props} />;
 }
-export function TR({ children }: { children: React.ReactNode }) { return <tr>{children}</tr>; }
-export function TH({ children }: { children: React.ReactNode }) { return <th className="text-left font-medium px-4 py-3">{children}</th>; }
-export function TD({ children }: { children: React.ReactNode }) { return <td className="px-4 py-3">{children}</td>; }
+
+export function TR({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLTableRowElement>) {
+  return <tr className={cn("", className)} {...props} />;
+}
+
+export function TH({
+  className,
+  ...props
+}: React.ThHTMLAttributes<HTMLTableHeaderCellElement>) {
+  return <th className={cn("text-left font-medium px-4 py-3", className)} {...props} />;
+}
+
+export function TD({
+  className,
+  ...props
+}: React.TdHTMLAttributes<HTMLTableDataCellElement>) {
+  return <td className={cn("px-4 py-3", className)} {...props} />;
+}

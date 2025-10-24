@@ -9,6 +9,7 @@ import { Modal } from "@/components/ui/modal";
 import ImportEmployees from "@/components/app/import_employees";
 import type { Employee } from "@/types/itam";
 import { load, save } from "@/lib/storage";
+import { TEAMS, LOCATIONS, getRolesForTeam } from "@/config/itam-taxonomy";
 
 const LS_KEY = "itam_employees_v1";
 
@@ -120,14 +121,47 @@ export default function EmployeesPage(){
       {/* Add Modal */}
       <Modal open={openAdd} onClose={()=>setOpenAdd(false)} title="Add employee">
         <div className="grid grid-cols-2 gap-3">
-          <Input placeholder="ID (e.g., EMP-1005)" value={form.id} onChange={e=>setForm({...form, id: e.target.value})} />
-          <Input placeholder="Name" value={form.name} onChange={e=>setForm({...form, name: e.target.value})} />
-          <Input placeholder="Email" value={form.email} onChange={e=>setForm({...form, email: e.target.value})} />
-          <Input placeholder="Team" value={form.team} onChange={e=>setForm({...form, team: e.target.value})} />
-          <Input placeholder="Role" value={form.role} onChange={e=>setForm({...form, role: e.target.value})} />
-          <Input placeholder="Phone" value={form.phone} onChange={e=>setForm({...form, phone: e.target.value})} />
-          <Input placeholder="Location" value={form.location} onChange={e=>setForm({...form, location: e.target.value})} />
+          <Input placeholder="ID (e.g., EMP-1005)" value={form.id}
+            onChange={e=>setForm({...form, id: e.target.value})} />
+          <Input placeholder="Name" value={form.name}
+            onChange={e=>setForm({...form, name: e.target.value})} />
+
+          <Input placeholder="Email" value={form.email}
+            onChange={e=>setForm({...form, email: e.target.value})} />
+
+          {/* Team 드롭다운 */}
+          <select className="h-10 rounded-xl border px-3"
+            value={form.team}
+            onChange={e=>{
+              const team = e.target.value;
+              const nextRoles = getRolesForTeam(team);
+              // 팀 바뀌면 역할도 초기값으로
+              setForm({...form, team, role: nextRoles[0] ?? ""});
+            }}>
+            <option value="" disabled>Select team</option>
+            {TEAMS.map(t => <option key={t} value={t}>{t}</option>)}
+          </select>
+
+          {/* Role 드롭다운 (팀 연동) */}
+          <select className="h-10 rounded-xl border px-3"
+            value={form.role}
+            onChange={e=>setForm({...form, role: e.target.value})}
+            disabled={!form.team}>
+            {getRolesForTeam(form.team || "").map(r => <option key={r} value={r}>{r}</option>)}
+          </select>
+
+          <Input placeholder="Phone" value={form.phone}
+            onChange={e=>setForm({...form, phone: e.target.value})} />
+
+          {/* Location 드롭다운 */}
+          <select className="h-10 rounded-xl border px-3"
+            value={form.location}
+            onChange={e=>setForm({...form, location: e.target.value})}>
+            <option value="" disabled>Select location</option>
+            {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
+          </select>
         </div>
+
         <div className="flex items-center justify-end gap-2 pt-4">
           <Button variant="outline" onClick={()=>setOpenAdd(false)}>Cancel</Button>
           <Button onClick={addEmployee}>Add</Button>
